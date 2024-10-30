@@ -163,4 +163,8 @@ public class Main {
         }
         return cantidadInicial;
     }
+
+    public static void prueba(){
+       System.out.println("sahfakshgñh");
+    }
     }
