@@ -1,45 +1,52 @@
 import javax.swing.*;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
-        JOptionPane.showMessageDialog(null,"Bienvenido al banco MEDINA");
+        JOptionPane.showMessageDialog(null, "Bienvenido al banco MEDINA");
         String nombre = solicitar_nombre();
         int numeroCuenta = solicitar_numeroCuenta();
         int cantidadInicial = solicitar_cantidadInicial();
-        int cantidad = solicitar_cantidad();
-        String accion = solicitar_accion();
+        int cantidad = 0;
+        String accion = "";
 
-        int resultado = calcularDatos(cantidadInicial,cantidad,accion);
+        LocalDate fechaHoy = LocalDate.now();
+        LocalTime horaHoy = LocalTime.now();
 
+        int resultado = cantidadInicial;
         Pattern patron = Pattern.compile("^(s|n)$");
         boolean hasta = true;
-
         String masAcciones = "";
-        do {
-            try {
-                masAcciones = JOptionPane.showInputDialog(null,"Desea realizar alguna otra accion?");
-                Matcher matcher = patron.matcher(masAcciones);
-                if(!matcher.matches()){
-                    throw new NombreIncorrectoException();
+
+        while (!masAcciones.equals("n")) {
+            do {
+                try {
+                    masAcciones = JOptionPane.showInputDialog(null, "¿Desea realizar alguna otra acción? (s/n)");
+                    Matcher matcher = patron.matcher(masAcciones);
+                    if (!matcher.matches()) {
+                        throw new IllegalArgumentException("Dato Incorrecto, introduzca s (sí) o n (no)");
+                    }
+                    hasta = false;
+                } catch (IllegalArgumentException e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
                 }
-                hasta = false;
+            } while (hasta);
+
+            if (masAcciones.equals("s")) {
+                cantidad = solicitar_cantidad();
+                accion = solicitar_accion();
+                resultado = calcularDatos(resultado, cantidad, accion);
             }
-            catch(NombreIncorrectoException e){
-                JOptionPane.showMessageDialog(null,"Dato Incorrecto, introduzca s(si) o n(no)");
-            }
-        }while (hasta);
-
-        do {
-            solicitar_cantidad();
-            solicitar_accion();
-            calcularDatos(cantidadInicial,cantidad,accion);
-        }while (masAcciones.equals("s"));
-
-
-        JOptionPane.showMessageDialog(null, resultado);
+        }
+        JOptionPane.showMessageDialog(null, "Su saldo se ha actualizado correctamente a las: "+fechaHoy +"   "+horaHoy);
+        JOptionPane.showMessageDialog(null, "Nombre del tititular: "+nombre+"\n"+"Numero de cuenta: "+numeroCuenta+"\n"+"Fecha de acutalizacion: "+fechaHoy+"\n"+"Saldo final: " + resultado);
     }
 
     public static String solicitar_nombre(){
@@ -155,14 +162,13 @@ public class Main {
     }
 
     public static int calcularDatos(int cantidadInicial, int cantidad, String accion){
+        int resultado = 0;
         if (accion.equals("imposicion")){
-            cantidadInicial += cantidad;
+            resultado = cantidadInicial + cantidad;
         }
         else if (accion.equals("reintegro")){
-            cantidadInicial -= cantidad;
+            resultado = cantidadInicial - cantidad;
         }
-        return cantidadInicial;
+        return resultado;
     }
-    public class hola{}
-
-    }
+}
