@@ -31,11 +31,11 @@ public class Main {
                     masAcciones = JOptionPane.showInputDialog(null, "¿Desea realizar alguna otra acción? (s/n)");
                     Matcher matcher = patron.matcher(masAcciones);
                     if (!matcher.matches()) {
-                        throw new IllegalArgumentException("Dato Incorrecto, introduzca s (sí) o n (no)");
+                        throw new NombreIncorrectoException();
                     }
                     hasta = false;
-                } catch (IllegalArgumentException e) {
-                    JOptionPane.showMessageDialog(null, e.getMessage());
+                } catch (NombreIncorrectoException e) {
+                    System.out.println("Dato Incorrecto, introduzca s (sí) o n (no)");
                 }
             } while (hasta);
 
